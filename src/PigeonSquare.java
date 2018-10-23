@@ -1,3 +1,4 @@
+import javafx.application.Application;;
 
 public class PigeonSquare {
 
@@ -6,6 +7,8 @@ public class PigeonSquare {
   // ===============================================================================================
   public static void main(String[] args) {
     Square square = new Square(10);
+
+    Application.launch(SquareDisplay.class, args);
 
     square.startPigeons();
   }
