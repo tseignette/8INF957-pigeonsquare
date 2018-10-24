@@ -44,7 +44,7 @@ public class SquareDisplay extends Application {
 	  primaryStage.show();
 	  startPigeons();
 	  
-	  primaryStage.setOnCloseRequest(event -> stopPigeons());
+		primaryStage.setOnCloseRequest(event -> stopPigeons());
   }
 
   public void sceneBuilder(Stage primaryStage) {
@@ -88,9 +88,7 @@ public class SquareDisplay extends Application {
   }
   
   public void stopPigeons() {
-	  for(Pigeon pigeon: this.pigeons) {
-		  pigeon.getThread().interrupt();
-	  }
+		this.threadGroup.interrupt();
   }
   
 }
