@@ -12,7 +12,7 @@ public class Pigeon implements Runnable {
   private Thread thread;
   private Point2D pos;
   private ImageView pigeon;
-  private final static double speed = 1;
+  private final static double speed = 5;
 
   // ===============================================================================================
   // CONSTRUCTOR
@@ -67,7 +67,7 @@ public class Pigeon implements Runnable {
 	      fear(midle);   
 	      
 	      try {
-	    	  Thread.sleep(500);
+	    	  Thread.sleep(100);
 	      } catch(InterruptedException e) {
 		          Thread.currentThread().interrupt();
 		          }
