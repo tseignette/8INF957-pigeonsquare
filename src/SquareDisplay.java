@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
-
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,10 +8,13 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class SquareDisplay extends Application {
 
@@ -24,7 +27,8 @@ public class SquareDisplay extends Application {
 
   private Group root;
   private ArrayList<Pigeon> pigeons;
-  private ThreadGroup threadGroup;
+	private ThreadGroup threadGroup;
+	private boolean hasScary = false;
 
   // ===============================================================================================
   // FUNCTIONS
@@ -35,16 +39,53 @@ public class SquareDisplay extends Application {
 		return(rangeMin + (rangeMax - rangeMin) * random.nextDouble());
 	}
 
+	public static Point2D randomPoint2D() {
+		return new Point2D(
+			SquareDisplay.randomDouble(SquareDisplay.WINDOWS_WIDTH),
+			SquareDisplay.randomDouble(SquareDisplay.WINDOWS_HEIGHT)
+		);
+	}
+
   public void start(Stage primaryStage) {
 		this.root = new Group();
 		
 	  sceneBuilder(primaryStage);
 		pigeonsBuilder(6);
 		
-	  primaryStage.show();
-	  startPigeons();
-	  
 		primaryStage.setOnCloseRequest(event -> stopPigeons());
+		primaryStage.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				Point2D mousePos = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+
+				if(mouseEvent.getButton() == MouseButton.PRIMARY) {
+					System.out.println("GAUCHE");
+				}
+				else if(mouseEvent.getButton() == MouseButton.SECONDARY) {
+					if(!hasScary) {
+						hasScary = true;
+						int scarySize = 100;
+						ImageView scary = new ImageView(new Image("./scary.png", scarySize, 0, true, true));
+						scary.setX(mousePos.getX() - scarySize / 2);
+						scary.setY(mousePos.getY() - scarySize / 2);
+						root.getChildren().add(scary);
+
+						FadeTransition ft = new FadeTransition(Duration.seconds(5), scary);
+						ft.setFromValue(1.0);
+						ft.setToValue(0.1);
+						ft.setOnFinished(e -> {
+							root.getChildren().remove(scary);
+							hasScary = false;
+						});
+				
+						ft.play();
+					}
+				}
+			}
+		});
+
+		primaryStage.show();
+		startPigeons();
   }
 
   public void sceneBuilder(Stage primaryStage) {
@@ -72,8 +113,7 @@ public class SquareDisplay extends Application {
 		  Pigeon pigeon = new Pigeon(
 				this.threadGroup,
 				pigeonView,
-				SquareDisplay.randomDouble(SquareDisplay.WINDOWS_WIDTH),
-				SquareDisplay.randomDouble(SquareDisplay.WINDOWS_HEIGHT)
+				SquareDisplay.randomPoint2D()
 			);
 
 			this.pigeons.add(pigeon);

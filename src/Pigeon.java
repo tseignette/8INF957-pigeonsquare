@@ -21,9 +21,9 @@ public class Pigeon implements Runnable {
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Pigeon(ThreadGroup tg, ImageView pigeonView, double x, double y) {
+  public Pigeon(ThreadGroup tg, ImageView pigeonView, Point2D pos) {
     this.thread = new Thread(tg, this, "Pigeon "+pigeonNb++);
-    this.pos = new Point2D(x, y);
+    this.pos = pos;
     this.view = pigeonView;
     updatePigeon(this.pos);
   }
@@ -69,12 +69,10 @@ public class Pigeon implements Runnable {
   }
 
   public void run() {
-    Point2D middle = new Point2D(290, 290);
-
     // Try catch block to catch possible InterruptedException when stopping the thread
     try {
       while(!thread.isInterrupted()) {
-        fear(middle);
+        // fear(middle);
 
         try {
           Thread.sleep(10);
