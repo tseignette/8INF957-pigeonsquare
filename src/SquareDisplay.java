@@ -4,6 +4,7 @@ import java.util.Random;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
@@ -34,7 +35,6 @@ public class SquareDisplay extends Application {
     
 	  pigeonsBuilder(10);
 	  startPigeons();
-	  pigeonsDisplayer();
     
 	  primaryStage.show();
 	  
@@ -71,19 +71,9 @@ public class SquareDisplay extends Application {
 		  Pigeon pigeon = new Pigeon(
 				  this.threadGroup,
 				  x,
-				  y);
+				  y,
+				  root);
 	  this.pigeons.add(pigeon);
-	  }
-  }
-  
-  public void pigeonsDisplayer() {	  
-	  Image imgPigeon = new Image("./pigeon.png", 40, 0, true, true);
-	  
-	  for (Pigeon pigeon : pigeons) {
-		  ImageView pigeonView =  new ImageView(imgPigeon);
-		  pigeonView.setX(pigeon.getX());
-		  pigeonView.setY(pigeon.getY());
-		  root.getChildren().add(pigeonView);
 	  }
   }
   
