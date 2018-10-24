@@ -28,14 +28,20 @@ public class SquareDisplay extends Application {
 
   // ===============================================================================================
   // FUNCTIONS
-  // ===============================================================================================
+	// ===============================================================================================
+	public static double randomDouble(double rangeMax) {
+		Random random = new Random();
+		double rangeMin = 0;
+		return(rangeMin + (rangeMax - rangeMin) * random.nextDouble());
+	}
+
   public void start(Stage primaryStage) {
-	  this.root = new Group();
+		this.root = new Group();
+		
 	  sceneBuilder(primaryStage);
-    
-	  pigeonsBuilder(10);
+		pigeonsBuilder(5);
+		
 	  startPigeons();
-    
 	  primaryStage.show();
 	  
 	  primaryStage.setOnCloseRequest(event -> stopPigeons());
@@ -43,37 +49,35 @@ public class SquareDisplay extends Application {
 
   public void sceneBuilder(Stage primaryStage) {
 	  Scene scene = new Scene(
-		      this.root,
-		      SquareDisplay.WINDOWS_WIDTH,
-		      SquareDisplay.WINDOWS_HEIGHT,
-		      SquareDisplay.WINDOW_BACKGROUND_COLOR
-		    );
+			this.root,
+			SquareDisplay.WINDOWS_WIDTH,
+			SquareDisplay.WINDOWS_HEIGHT,
+			SquareDisplay.WINDOW_BACKGROUND_COLOR
+		);
 	  
 	  primaryStage.setTitle("Pigeon Square");
 	  primaryStage.setScene(scene);
+	  primaryStage.setScene(scene);
+    primaryStage.setResizable(false);
 	  primaryStage.getIcons().add(new Image("./pigeon.png"));
-	  
-	  // Provisoire : Si on arrive à rendre la fenêtre responsive on peut enlever
-	  primaryStage.setMinHeight(WINDOWS_HEIGHT);
-	  primaryStage.setMaxHeight(WINDOWS_HEIGHT);
-	  primaryStage.setMinWidth(WINDOWS_WIDTH);
-	  primaryStage.setMaxWidth(WINDOWS_WIDTH);
   }
   
   public void pigeonsBuilder(int pigeonNb) {
-	  Random random = new Random();
+		Image pigeonImage = new Image("./pigeon.png", Pigeon.IMAGE_SIZE, 0, true, true);
 	  this.threadGroup = new ThreadGroup("Pigeons");
 	  this.pigeons = new ArrayList<Pigeon>();
-	
+		
 	  for(int i = 0; i < pigeonNb; i++) {
-		  double x = (random.nextDouble()  * 1000)/2;
-		  double y = (random.nextDouble()  * 1000)/2;
+			ImageView pigeonView = new ImageView(pigeonImage);
 		  Pigeon pigeon = new Pigeon(
-				  this.threadGroup,
-				  x,
-				  y,
-				  root);
-	  this.pigeons.add(pigeon);
+				this.threadGroup,
+				pigeonView,
+				SquareDisplay.randomDouble(SquareDisplay.WINDOWS_WIDTH),
+				SquareDisplay.randomDouble(SquareDisplay.WINDOWS_HEIGHT)
+			);
+
+			this.pigeons.add(pigeon);
+			root.getChildren().add(pigeonView);
 	  }
   }
   
@@ -85,7 +89,7 @@ public class SquareDisplay extends Application {
   
   public void stopPigeons() {
 	  for(Pigeon pigeon: this.pigeons) {
-		  pigeon.getThread().stop();
+		  pigeon.getThread().interrupt();
 	  }
   }
   
