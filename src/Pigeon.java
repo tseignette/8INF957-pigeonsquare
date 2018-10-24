@@ -1,3 +1,5 @@
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Pigeon implements Runnable {
 
@@ -6,13 +8,13 @@ public class Pigeon implements Runnable {
   // ===============================================================================================
   private static int pigeonNb = 0;
   private Thread thread;
-  private int x;
-  private int y;
+  private double x;
+  private double y;
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Pigeon(ThreadGroup tg, int x, int y) {
+  public Pigeon(ThreadGroup tg, double x, double y) {
     this.thread = new Thread(tg, this, "Pigeon "+pigeonNb++);
     this.x = x;
     this.y = y;
@@ -23,6 +25,14 @@ public class Pigeon implements Runnable {
   // ===============================================================================================
   public Thread getThread() {
     return this.thread;
+  }
+  
+  public double getX() {
+	  return this.x;
+  }
+  
+  public double getY() {
+	  return this.y;
   }
 
   public void run() {
