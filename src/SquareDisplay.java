@@ -29,6 +29,8 @@ public class SquareDisplay extends Application {
   private ArrayList<Pigeon> pigeons;
 	private ThreadGroup threadGroup;
 	private boolean hasScary = false;
+	private Point2D scaryPos;
+	private SquareDisplay me = this;
 
   // ===============================================================================================
   // FUNCTIONS
@@ -44,6 +46,18 @@ public class SquareDisplay extends Application {
 			SquareDisplay.randomDouble(SquareDisplay.WINDOWS_WIDTH),
 			SquareDisplay.randomDouble(SquareDisplay.WINDOWS_HEIGHT)
 		);
+	}
+
+	public boolean hasFood() {
+		return false;
+	}
+
+	public boolean hasScary() {
+		return hasScary;
+	}
+
+	public Point2D getScary() {
+		return scaryPos;
 	}
 
   public void start(Stage primaryStage) {
@@ -64,21 +78,25 @@ public class SquareDisplay extends Application {
 				else if(mouseEvent.getButton() == MouseButton.SECONDARY) {
 					if(!hasScary) {
 						hasScary = true;
+						scaryPos = mousePos;
 						int scarySize = 100;
 						ImageView scary = new ImageView(new Image("./scary.png", scarySize, 0, true, true));
 						scary.setX(mousePos.getX() - scarySize / 2);
 						scary.setY(mousePos.getY() - scarySize / 2);
 						root.getChildren().add(scary);
 
-						FadeTransition ft = new FadeTransition(Duration.seconds(5), scary);
-						ft.setFromValue(1.0);
-						ft.setToValue(0.1);
-						ft.setOnFinished(e -> {
+						FadeTransition scaryTransition = new FadeTransition(Duration.seconds(5), scary);
+						scaryTransition.setFromValue(1.0);
+						scaryTransition.setToValue(0.1);
+						scaryTransition.setOnFinished(e -> {
 							root.getChildren().remove(scary);
 							hasScary = false;
 						});
 				
-						ft.play();
+						scaryTransition.play();
+						synchronized(me) {
+							me.notifyAll();
+						}
 					}
 				}
 			}
@@ -99,7 +117,7 @@ public class SquareDisplay extends Application {
 	  primaryStage.setTitle("Pigeon Square");
 	  primaryStage.setScene(scene);
 	  primaryStage.setScene(scene);
-    primaryStage.setResizable(false);
+    // primaryStage.setResizable(false);
 	  primaryStage.getIcons().add(new Image("./pigeon.png"));
   }
   
@@ -113,6 +131,7 @@ public class SquareDisplay extends Application {
 		  Pigeon pigeon = new Pigeon(
 				this.threadGroup,
 				pigeonView,
+				this,
 				SquareDisplay.randomPoint2D()
 			);
 

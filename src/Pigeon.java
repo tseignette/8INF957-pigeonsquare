@@ -17,14 +17,16 @@ public class Pigeon implements Runnable {
   private Thread thread;
   private Point2D pos;
   private ImageView view;
+  private SquareDisplay square;
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Pigeon(ThreadGroup tg, ImageView pigeonView, Point2D pos) {
+  public Pigeon(ThreadGroup tg, ImageView pigeonView, SquareDisplay square, Point2D pos) {
     this.thread = new Thread(tg, this, "Pigeon "+pigeonNb++);
     this.pos = pos;
     this.view = pigeonView;
+    this.square = square;
     updatePigeon(this.pos);
   }
 
@@ -41,7 +43,7 @@ public class Pigeon implements Runnable {
 
   public void updatePigeon(Point2D pos) {
     double newX = (pos.getX() > 0 && pos.getX() < SquareDisplay.WINDOWS_WIDTH) ? pos.getX() : this.pos.getX();
-    double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_WIDTH) ? pos.getY() : this.pos.getY();
+    double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_HEIGHT) ? pos.getY() : this.pos.getY();
 
     this.pos = new Point2D(newX, newY);
     Platform.runLater(
@@ -72,10 +74,21 @@ public class Pigeon implements Runnable {
     // Try catch block to catch possible InterruptedException when stopping the thread
     try {
       while(!thread.isInterrupted()) {
-        // fear(middle);
-
         try {
-          Thread.sleep(10);
+          synchronized(square) {
+            square.wait();
+          }
+
+          while(square.hasScary() || square.hasFood()) {
+            if(square.hasScary()) {
+              fear(square.getScary());
+            }
+            else if(square.hasFood()) {
+              // TODO:
+            }
+
+            Thread.sleep(10);
+          }
         }
         catch(InterruptedException e) {
           Thread.currentThread().interrupt();
