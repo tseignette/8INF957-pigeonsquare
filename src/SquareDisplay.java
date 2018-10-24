@@ -39,7 +39,7 @@ public class SquareDisplay extends Application {
 		this.root = new Group();
 		
 	  sceneBuilder(primaryStage);
-		pigeonsBuilder(3);
+		pigeonsBuilder(6);
 		
 	  primaryStage.show();
 	  startPigeons();

@@ -10,7 +10,7 @@ public class Pigeon implements Runnable {
   // ATTRIBUTES
   // ===============================================================================================
   public final static int IMAGE_SIZE = 60;
-  private final static double speed = 0.5;
+  private final static double speed = 1;
 
   private static int pigeonNb = 0;
 
@@ -31,10 +31,6 @@ public class Pigeon implements Runnable {
   // ===============================================================================================
   // FUNCTIONS
   // ===============================================================================================
-  private double realModulo(double x, int n) {
-    return((x % n + n) % n);
-  }
-
   public Thread getThread() {
     return this.thread;
   }
@@ -44,11 +40,14 @@ public class Pigeon implements Runnable {
   }
 
   public void updatePigeon(Point2D pos) {
-    this.pos = pos;
+    double newX = (pos.getX() > 0 && pos.getX() < SquareDisplay.WINDOWS_WIDTH) ? pos.getX() : this.pos.getX();
+    double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_WIDTH) ? pos.getY() : this.pos.getY();
+
+    this.pos = new Point2D(newX, newY);
     Platform.runLater(
       () -> {
-        this.view.setX(this.realModulo((pos.getX() - Pigeon.IMAGE_SIZE / 2), SquareDisplay.WINDOWS_WIDTH));
-        this.view.setY(this.realModulo((pos.getY() - Pigeon.IMAGE_SIZE / 2), SquareDisplay.WINDOWS_HEIGHT));
+        this.view.setX(this.pos.getX() - Pigeon.IMAGE_SIZE / 2);
+        this.view.setY(this.pos.getY() - Pigeon.IMAGE_SIZE / 2);
       }
     );
   }
@@ -75,7 +74,6 @@ public class Pigeon implements Runnable {
     // Try catch block to catch possible InterruptedException when stopping the thread
     try {
       while(!thread.isInterrupted()) {
-        // System.out.println(this.thread.getName() + " here!");
         fear(middle);
 
         try {
