@@ -18,8 +18,8 @@ public class SquareDisplay extends Application {
   // ===============================================================================================
   // ATTRIBUTES
   // ===============================================================================================
-  private final static int WINDOWS_WIDTH = 580;
-  private final static int WINDOWS_HEIGHT = 580;
+  public final static int WINDOWS_WIDTH = 580;
+  public final static int WINDOWS_HEIGHT = 580;
   private final static Color WINDOW_BACKGROUND_COLOR = Color.BURLYWOOD;
 
   private Group root;
@@ -39,10 +39,10 @@ public class SquareDisplay extends Application {
 		this.root = new Group();
 		
 	  sceneBuilder(primaryStage);
-		pigeonsBuilder(5);
+		pigeonsBuilder(3);
 		
-	  startPigeons();
 	  primaryStage.show();
+	  startPigeons();
 	  
 	  primaryStage.setOnCloseRequest(event -> stopPigeons());
   }
