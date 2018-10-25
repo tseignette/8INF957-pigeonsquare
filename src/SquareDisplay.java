@@ -32,19 +32,6 @@ public class SquareDisplay extends Application {
 	// ===============================================================================================
 	// FUNCTIONS
 	// ===============================================================================================
-	public static double randomDouble(double rangeMax) {
-		Random random = new Random();
-		double rangeMin = 0;
-		return(rangeMin + (rangeMax - rangeMin) * random.nextDouble());
-	}
-
-	public static Point2D randomPoint2D() {
-		return new Point2D(
-			SquareDisplay.randomDouble(SquareDisplay.WINDOWS_WIDTH),
-			SquareDisplay.randomDouble(SquareDisplay.WINDOWS_HEIGHT)
-		);
-	}
-
 	public boolean hasFood() {
 		return !foodList.isEmpty();
 	}
@@ -132,7 +119,7 @@ public class SquareDisplay extends Application {
 				this.threadGroup,
 				root,
 				this,
-				SquareDisplay.randomPoint2D()
+				Utils.randomPoint2D()
 			);
 
 			this.pigeons.add(pigeon);
