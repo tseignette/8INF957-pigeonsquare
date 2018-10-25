@@ -7,10 +7,14 @@ import javafx.scene.Group;
 public class Pigeon extends Drawing implements Runnable {
 
   // ===============================================================================================
+  // CONSTANTS
+  // ===============================================================================================
+  private final static double SPEED = 1;
+  private final static int IMG_SIZE = 60;
+
+  // ===============================================================================================
   // ATTRIBUTES
   // ===============================================================================================
-  private final static double speed = 1;
-
   private static int pigeonNb = 0;
 
   private Thread thread;
@@ -20,7 +24,7 @@ public class Pigeon extends Drawing implements Runnable {
   // CONSTRUCTOR
   // ===============================================================================================
   public Pigeon(ThreadGroup tg, Group group, SquareDisplay square) {
-    super(group, "./pigeon.png", 60);
+    super(group, "./pigeon.png", Pigeon.IMG_SIZE);
 
     this.thread = new Thread(tg, this, "Pigeon "+pigeonNb++);
     this.square = square;
@@ -70,13 +74,13 @@ public class Pigeon extends Drawing implements Runnable {
 
   public void move(Point2D arrivee) {
     Point2D vector = getVector(this.getPos(), arrivee).normalize();
-    Point2D newPos = this.getPos().add(vector.multiply(speed));
+    Point2D newPos = this.getPos().add(vector.multiply(SPEED));
     updatePigeon(newPos);
   }
 
   public void fear(Point2D originFear) {
 	  Point2D vector = getVector(originFear, this.getPos()).normalize();
-	  Point2D newPos = this.getPos().add(vector.multiply(speed));
+	  Point2D newPos = this.getPos().add(vector.multiply(SPEED));
 	  updatePigeon(newPos);
   }
 
