@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
@@ -12,7 +13,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,8 +31,8 @@ public class SquareDisplay extends Application {
 	private ThreadGroup threadGroup;
 	private boolean hasScary = false;
 	private Point2D scaryPos;
-	private boolean hasFood = false;
-	private Point2D foodPos;
+	private int hasFood = 0;
+	private ArrayList<Point2D> foodPos;
 	private SquareDisplay me = this;
 
 	// ===============================================================================================
@@ -53,14 +53,14 @@ public class SquareDisplay extends Application {
 	}
 
 	public boolean hasFood() {
-		return hasFood;
+		return hasFood > 0;
 	}
 
 	public boolean hasScary() {
 		return hasScary;
 	}
 	
-	public Point2D getFood() {
+	public ArrayList<Point2D> getFood() {
 		return foodPos;
 	}
 
@@ -70,6 +70,7 @@ public class SquareDisplay extends Application {
 
 	public void start(Stage primaryStage) {
 		this.root = new Group();
+		this.foodPos = new ArrayList<Point2D>();
 		
 		sceneBuilder(primaryStage);
 		pigeonsBuilder(6);
@@ -154,9 +155,9 @@ public class SquareDisplay extends Application {
 	}
 	
 	public void spawnFood(Point2D mousePos) {
-		if(!hasFood) {
-			hasFood = true;
-			foodPos = mousePos;
+		if(hasFood < 3) {
+			hasFood++;
+			foodPos.add(mousePos);
 			int foodSize = 30;
 			ImageView food = new ImageView(new Image("./food.png", foodSize, 0, true, true));
 			food.setX(mousePos.getX() - foodSize / 2);
@@ -168,7 +169,8 @@ public class SquareDisplay extends Application {
 			foodTransition.setToValue(0);
 			foodTransition.setOnFinished(e -> {
 				root.getChildren().remove(food);
-				hasFood = false;
+				foodPos.remove(mousePos);
+				hasFood--;
 			});
 	
 			foodTransition.play();

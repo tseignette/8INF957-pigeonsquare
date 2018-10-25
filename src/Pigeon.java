@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -18,7 +21,6 @@ public class Pigeon implements Runnable {
   private Point2D pos;
   private ImageView view;
   private SquareDisplay square;
-  private boolean isScared;
 
   // ===============================================================================================
   // CONSTRUCTOR
@@ -58,6 +60,19 @@ public class Pigeon implements Runnable {
   public Point2D getVector(Point2D depart, Point2D arrivee) {
     return new Point2D(arrivee.getX() - depart.getX(), arrivee.getY() - depart.getY());
   }
+  
+  public Point2D getNearest(List<Point2D> list) {
+	  Point2D sol = new Point2D(0,0);
+	  double distanceCarreMin = 2000;
+	  for (Point2D point : list) {
+		  double distanceCarre = this.pos.distance(point);
+		  if (distanceCarre < distanceCarreMin) {
+			  distanceCarreMin = distanceCarre;
+			  sol = point;
+		  }
+	  }
+	  return sol;
+  }
 
   public void move(Point2D arrivee) {
     Point2D vector = getVector(this.pos, arrivee).normalize();
@@ -85,7 +100,8 @@ public class Pigeon implements Runnable {
               fear(square.getScary());
             }
             else if(square.hasFood()) {
-              move(square.getFood());
+              ArrayList<Point2D> foodList = square.getFood();
+              move(getNearest(foodList));
             }
 
             Thread.sleep(10);
