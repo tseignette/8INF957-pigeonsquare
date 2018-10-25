@@ -79,6 +79,10 @@ public class SquareDisplay extends Application {
 		return scaryPos;
 	}
 
+	public void removeScary() {
+		hasScary = false;
+	}
+
 	public void start(Stage primaryStage) {
 		this.root = new Group();
 		this.foodPos = new ArrayList<Food>();
@@ -142,21 +146,11 @@ public class SquareDisplay extends Application {
 		if(!hasScary) {
 			hasScary = true;
 			scaryPos = mousePos;
-			int scarySize = 100;
-			ImageView scary = new ImageView(new Image("./scary.png", scarySize, 0, true, true));
-			scary.setX(mousePos.getX() - scarySize / 2);
-			scary.setY(mousePos.getY() - scarySize / 2);
-			root.getChildren().add(scary);
 
-			FadeTransition scaryTransition = new FadeTransition(Duration.seconds(2), scary);
-			scaryTransition.setFromValue(1.0);
-			scaryTransition.setToValue(0.1);
-			scaryTransition.setOnFinished(e -> {
-				root.getChildren().remove(scary);
-				hasScary = false;
-			});
-	
-			scaryTransition.play();
+			BadGuy scary = new BadGuy(root, me);
+			scary.setDrawingPosition(scaryPos);
+			scary.draw();
+
 			synchronized(me) {
 				me.notifyAll();
 			}
@@ -165,7 +159,7 @@ public class SquareDisplay extends Application {
 	
 	public void spawnFood(Point2D mousePos) {
 		Food food = new Food(mousePos, root, me);
-		food.setDrawingPosition(mousePos);
+		food.setDrawingPosition(mousePos); // TODO: remove duplicate position set
 		food.draw();
 		foodPos.add(food);
 
