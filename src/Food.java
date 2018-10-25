@@ -4,7 +4,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 public class Food extends Drawing {
@@ -43,9 +42,8 @@ public class Food extends Drawing {
 				
 				expiredFoodTransition.play();
 			}
-		});
-		
-		foodTransition.play();
+    });
+    setTransition(foodTransition);
 
     setDrawingPosition(pos);
     this.pos = pos;
