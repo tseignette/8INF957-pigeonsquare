@@ -166,13 +166,25 @@ public class SquareDisplay extends Application {
 
 			FadeTransition foodTransition = new FadeTransition(Duration.seconds(2), food);
 			foodTransition.setFromValue(1.0);
-			foodTransition.setToValue(0);
+			foodTransition.setToValue(0.5);
 			foodTransition.setOnFinished(e -> {
 				root.getChildren().remove(food);
 				foodPos.remove(mousePos);
 				hasFood--;
+				
+				ImageView expiredFood = new ImageView(new Image("./expiredFood.png", foodSize, 0, true, true));
+				expiredFood.setX(mousePos.getX() - foodSize / 2);
+				expiredFood.setY(mousePos.getY() - foodSize / 2);
+				root.getChildren().add(expiredFood);
+				
+				FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), food);
+				expiredFoodTransition.setOnFinished(event -> {
+					root.getChildren().remove(expiredFood);
+				});
+				
+				expiredFoodTransition.play();
 			});
-	
+			
 			foodTransition.play();
 			synchronized(me) {
 				me.notifyAll();

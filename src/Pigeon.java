@@ -63,11 +63,11 @@ public class Pigeon implements Runnable {
   
   public Point2D getNearest(List<Point2D> list) {
 	  Point2D sol = new Point2D(0,0);
-	  double distanceCarreMin = 2000;
+	  double distanceMin = 2000;
 	  for (Point2D point : list) {
-		  double distanceCarre = this.pos.distance(point);
-		  if (distanceCarre < distanceCarreMin) {
-			  distanceCarreMin = distanceCarre;
+		  double distance = this.pos.distance(point);
+		  if (distance < distanceMin) {
+			  distanceMin = distance;
 			  sol = point;
 		  }
 	  }
