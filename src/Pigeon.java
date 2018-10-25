@@ -18,6 +18,7 @@ public class Pigeon implements Runnable {
   private Point2D pos;
   private ImageView view;
   private SquareDisplay square;
+  private boolean isScared;
 
   // ===============================================================================================
   // CONSTRUCTOR
@@ -65,9 +66,9 @@ public class Pigeon implements Runnable {
   }
 
   public void fear(Point2D originFear) {
-    Point2D vector = getVector(originFear, this.pos).normalize();
-    Point2D newPos = this.pos.add(vector.multiply(speed));
-    updatePigeon(newPos);
+	  Point2D vector = getVector(originFear, this.pos).normalize();
+	  Point2D newPos = this.pos.add(vector.multiply(speed));
+	  updatePigeon(newPos);
   }
 
   public void run() {
@@ -84,7 +85,7 @@ public class Pigeon implements Runnable {
               fear(square.getScary());
             }
             else if(square.hasFood()) {
-              // TODO:
+              move(square.getFood());
             }
 
             Thread.sleep(10);
