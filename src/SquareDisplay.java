@@ -1,9 +1,10 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
+
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -21,7 +22,6 @@ public class SquareDisplay extends Application {
 	// ===============================================================================================
 	// ATTRIBUTES
 	// ===============================================================================================
-  
 	public final static int WINDOWS_WIDTH = 600;
 	public final static int WINDOWS_HEIGHT = 600;
 	private final static Color WINDOW_BACKGROUND_COLOR = Color.BURLYWOOD;
@@ -31,14 +31,12 @@ public class SquareDisplay extends Application {
 	private ThreadGroup threadGroup;
 	private boolean hasScary = false;
 	private Point2D scaryPos;
-	private int hasFood = 0;
-	private ArrayList<Point2D> foodPos;
+	private ArrayList<Food> foodPos;
 	private SquareDisplay me = this;
 
 	// ===============================================================================================
 	// FUNCTIONS
 	// ===============================================================================================
-	
 	public static double randomDouble(double rangeMax) {
 		Random random = new Random();
 		double rangeMin = 0;
@@ -53,15 +51,30 @@ public class SquareDisplay extends Application {
 	}
 
 	public boolean hasFood() {
-		return hasFood > 0;
+		return !foodPos.isEmpty();
 	}
 
 	public boolean hasScary() {
 		return hasScary;
 	}
 	
-	public ArrayList<Point2D> getFood() {
+	public ArrayList<Food> getFood() {
 		return foodPos;
+	}
+
+	public boolean eatFood(Food food) {
+		boolean ret = food.eat();
+		if(ret) {
+			System.out.println(Thread.currentThread().getName()+" a mangé "+food+" !");
+			foodPos.remove(food);
+			Platform.runLater(
+				() -> {
+					root.getChildren().remove(food.getView());
+				}
+			);
+		}
+
+		return ret;
 	}
 
 	public Point2D getScary() {
@@ -70,10 +83,10 @@ public class SquareDisplay extends Application {
 
 	public void start(Stage primaryStage) {
 		this.root = new Group();
-		this.foodPos = new ArrayList<Point2D>();
+		this.foodPos = new ArrayList<Food>();
 		
 		sceneBuilder(primaryStage);
-		pigeonsBuilder(6);
+		pigeonsBuilder(10);
 		
 		primaryStage.setOnCloseRequest(event -> stopPigeons());
 		
@@ -141,7 +154,7 @@ public class SquareDisplay extends Application {
 
 			FadeTransition scaryTransition = new FadeTransition(Duration.seconds(2), scary);
 			scaryTransition.setFromValue(1.0);
-			scaryTransition.setToValue(0);
+			scaryTransition.setToValue(0.1);
 			scaryTransition.setOnFinished(e -> {
 				root.getChildren().remove(scary);
 				hasScary = false;
@@ -155,33 +168,35 @@ public class SquareDisplay extends Application {
 	}
 	
 	public void spawnFood(Point2D mousePos) {
-		hasFood++;
-		foodPos.add(mousePos);
 		int foodSize = 40;
-		ImageView food = new ImageView(new Image("./food.png", foodSize, 0, true, true));
-		food.setX(mousePos.getX() - foodSize / 2);
-		food.setY(mousePos.getY() - foodSize / 2);
-		root.getChildren().add(food);
+		ImageView foodView = new ImageView(new Image("./food.png", foodSize, 0, true, true));
+		foodView.setX(mousePos.getX() - foodSize / 2);
+		foodView.setY(mousePos.getY() - foodSize / 2);
+		root.getChildren().add(foodView);
 
-		FadeTransition foodTransition = new FadeTransition(Duration.seconds(2), food);
-		foodTransition.setFromValue(1.0);
-		foodTransition.setToValue(0.5);
+		Food food = new Food(mousePos, foodView);
+		foodPos.add(food);
+
+		PauseTransition foodTransition = new PauseTransition(Duration.seconds(2));
 		foodTransition.setOnFinished(e -> {
-			root.getChildren().remove(food);
-			foodPos.remove(mousePos);
-			hasFood--;
-			
-			ImageView expiredFood = new ImageView(new Image("./expiredFood.png", foodSize, 0, true, true));
-			expiredFood.setX(mousePos.getX() - foodSize / 2);
-			expiredFood.setY(mousePos.getY() - foodSize / 2);
-			root.getChildren().add(expiredFood);
-			
-			FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), food);
-			expiredFoodTransition.setOnFinished(event -> {
-				root.getChildren().remove(expiredFood);
-			});
-			
-			expiredFoodTransition.play();
+			if(root.getChildren().contains(foodView)) {
+				root.getChildren().remove(foodView);
+				foodPos.remove(food);
+				
+				ImageView expiredFood = new ImageView(new Image("./expiredFood.png", foodSize, 0, true, true));
+				expiredFood.setX(mousePos.getX() - foodSize / 2);
+				expiredFood.setY(mousePos.getY() - foodSize / 2);
+				root.getChildren().add(expiredFood);
+				
+				FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), expiredFood);
+				expiredFoodTransition.setFromValue(1.0);
+				expiredFoodTransition.setToValue(0.0);
+				expiredFoodTransition.setOnFinished(event -> {
+					root.getChildren().remove(expiredFood);
+				});
+				
+				expiredFoodTransition.play();
+			}
 		});
 		
 		foodTransition.play();

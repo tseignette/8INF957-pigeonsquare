@@ -3,8 +3,6 @@ import java.util.List;
 
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Pigeon implements Runnable {
@@ -61,17 +59,22 @@ public class Pigeon implements Runnable {
     return new Point2D(arrivee.getX() - depart.getX(), arrivee.getY() - depart.getY());
   }
   
-  public Point2D getNearest(List<Point2D> list) {
-	  Point2D sol = new Point2D(0,0);
+  private Food getNearest(List<Food> list) {
+	  Food sol = new Food(this.getPos());
 	  double distanceMin = 2000;
-	  for (Point2D point : list) {
+	  for (Food food : list) {
+      Point2D point = food.getPos();
 		  double distance = this.pos.distance(point);
 		  if (distance < distanceMin) {
 			  distanceMin = distance;
-			  sol = point;
+			  sol = food;
 		  }
 	  }
 	  return sol;
+  }
+
+  private boolean isNear(Point2D foodPos) {
+    return(this.pos.distance(foodPos) < 2);
   }
 
   public void move(Point2D arrivee) {
@@ -100,8 +103,10 @@ public class Pigeon implements Runnable {
               fear(square.getScary());
             }
             else if(square.hasFood()) {
-              ArrayList<Point2D> foodList = square.getFood();
-              move(getNearest(foodList));
+              ArrayList<Food> foodList = square.getFood();
+              Food nearestFood = getNearest(foodList);
+              move(nearestFood.getPos());
+              if(isNear(nearestFood.getPos())) square.eatFood(nearestFood);
             }
 
             Thread.sleep(10);
