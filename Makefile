@@ -7,4 +7,4 @@ run:
 	java -cp bin PigeonSquare
 
 clean:
-	rm -R bin/*
+	rm -R bin/*.class
