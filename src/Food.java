@@ -18,12 +18,11 @@ public class Food extends Drawing {
   // ===============================================================================================
   private ReentrantLock lock = new ReentrantLock();
   private boolean hasBeenEaten = false;
-  private Point2D pos;
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Food(Point2D pos, Group group, SquareDisplay square) {
+  public Food(Group group, SquareDisplay square) {
     super(group, "./food.png", Food.IMG_SIZE);
 
 		PauseTransition foodTransition = new PauseTransition(Duration.seconds(2));
@@ -43,17 +42,15 @@ public class Food extends Drawing {
 				expiredFoodTransition.play();
 			}
     });
+    
     setTransition(foodTransition);
-
-    setDrawingPosition(pos);
-    this.pos = pos;
   }
 
   // ===============================================================================================
   // FUNCTIONS
   // ===============================================================================================
   public Point2D getPos() {
-    return pos;
+    return new Point2D(getView().getX(), getView().getY());
   }
 
   /**

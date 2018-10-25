@@ -33,38 +33,48 @@ public abstract class Drawing {
     return view;
   }
 
-  public void setDrawingPosition(Point2D pos) {
+  public Drawing setDrawingPosition(Point2D pos) {
     Platform.runLater(
       () -> {
         this.view.setX(pos.getX() - drawingSize / 2);
         this.view.setY(pos.getY() - drawingSize / 2);
       }
     );
+
+    return this;
   }
 
-  public void setImage(String imgUrl) {
+  public Drawing setImage(String imgUrl) {
     view.setImage(new Image(imgUrl, drawingSize, 0, true, true));
+    
+    return this;
   }
 
-  public void setTransition(Transition transition) {
+  public Drawing setTransition(Transition transition) {
     this.transition = transition;
+
+    return this;
   }
 
-  public void draw() {
+  public Drawing draw() {
     Platform.runLater(
       () -> {
         group.getChildren().add(view);
         if(transition != null) transition.play();
       }
     );
+
+    return this;
   }
 
-  public void erase() {
+  public Drawing erase() {
     Platform.runLater(
       () -> {
         group.getChildren().remove(view);
       }
     );
+
+    return this;
   }
 
 }

@@ -1,19 +1,16 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class SquareDisplay extends Application {
 
@@ -29,7 +26,7 @@ public class SquareDisplay extends Application {
 	private ThreadGroup threadGroup;
 	private boolean hasScary = false;
 	private Point2D scaryPos;
-	private ArrayList<Food> foodPos;
+	private ArrayList<Food> foodList;
 	private SquareDisplay me = this;
 
 	// ===============================================================================================
@@ -49,7 +46,7 @@ public class SquareDisplay extends Application {
 	}
 
 	public boolean hasFood() {
-		return !foodPos.isEmpty();
+		return !foodList.isEmpty();
 	}
 
 	public boolean hasScary() {
@@ -57,18 +54,18 @@ public class SquareDisplay extends Application {
 	}
 	
 	public ArrayList<Food> getFood() {
-		return foodPos;
+		return foodList;
 	}
 
 	public void removeFood(Food food) {
-		foodPos.remove(food);
+		foodList.remove(food);
 	}
 
 	public boolean eatFood(Food food) {
 		boolean ret = food.eat();
 		if(ret) {
 			System.out.println(Thread.currentThread().getName()+" a mangé "+food+" !");
-			foodPos.remove(food);
+			foodList.remove(food);
 			food.erase();
 		}
 
@@ -85,7 +82,7 @@ public class SquareDisplay extends Application {
 
 	public void start(Stage primaryStage) {
 		this.root = new Group();
-		this.foodPos = new ArrayList<Food>();
+		this.foodList = new ArrayList<Food>();
 		
 		sceneBuilder(primaryStage);
 		pigeonsBuilder(10);
@@ -130,6 +127,7 @@ public class SquareDisplay extends Application {
 		this.pigeons = new ArrayList<Pigeon>();
 		
 		for(int i = 0; i < pigeonNb; i++) {
+			// TODO: enlever le position dans le pigeon
 			Pigeon pigeon = new Pigeon(
 				this.threadGroup,
 				root,
@@ -148,8 +146,8 @@ public class SquareDisplay extends Application {
 			scaryPos = mousePos;
 
 			BadGuy scary = new BadGuy(root, me);
-			scary.setDrawingPosition(scaryPos);
-			scary.draw();
+			scary.setDrawingPosition(scaryPos)
+			.draw();
 
 			synchronized(me) {
 				me.notifyAll();
@@ -158,10 +156,11 @@ public class SquareDisplay extends Application {
 	}
 	
 	public void spawnFood(Point2D mousePos) {
-		Food food = new Food(mousePos, root, me);
-		food.setDrawingPosition(mousePos); // TODO: remove duplicate position set
-		food.draw();
-		foodPos.add(food);
+		Food food = new Food(root, me);
+		food.setDrawingPosition(mousePos)
+		.draw();
+
+		foodList.add(food);
 
 		synchronized(me) {
 			me.notifyAll();

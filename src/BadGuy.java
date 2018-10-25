@@ -22,6 +22,7 @@ public class BadGuy extends Drawing {
       erase();
       square.removeScary();
     });
+    
     setTransition(badGuyTransition);
   }
 
