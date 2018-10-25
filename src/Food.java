@@ -1,37 +1,59 @@
 import java.util.concurrent.locks.ReentrantLock;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
-public class Food {
+public class Food extends Drawing {
+
+  // ===============================================================================================
+  // CONSTANTS
+  // ===============================================================================================
+  private final static int IMG_SIZE = 40;
 
   // ===============================================================================================
   // ATTRIBUTES
   // ===============================================================================================
   private ReentrantLock lock = new ReentrantLock();
   private boolean hasBeenEaten = false;
-  private ImageView view;
   private Point2D pos;
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Food(Point2D pos) {
-    this.pos = pos;
-  }
+  public Food(Point2D pos, Group group, SquareDisplay square) {
+    super(group, "./food.png", Food.IMG_SIZE);
 
-  public Food(Point2D pos, ImageView view) {
+		PauseTransition foodTransition = new PauseTransition(Duration.seconds(2));
+		foodTransition.setOnFinished(e -> {
+			if(!hasBeenEaten) {
+        square.removeFood(this);
+        
+        setImage("./expiredFood.png");
+				
+				FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), getView());
+				expiredFoodTransition.setFromValue(1.0);
+				expiredFoodTransition.setToValue(0.0);
+				expiredFoodTransition.setOnFinished(event -> {
+          erase();
+				});
+				
+				expiredFoodTransition.play();
+			}
+		});
+		
+		foodTransition.play();
+
+    setDrawingPosition(pos);
     this.pos = pos;
-    this.view = view;
   }
 
   // ===============================================================================================
   // FUNCTIONS
   // ===============================================================================================
-  public ImageView getView() {
-    return view;
-  }
-
   public Point2D getPos() {
     return pos;
   }

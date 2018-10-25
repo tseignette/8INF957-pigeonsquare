@@ -2,9 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -62,16 +60,16 @@ public class SquareDisplay extends Application {
 		return foodPos;
 	}
 
+	public void removeFood(Food food) {
+		foodPos.remove(food);
+	}
+
 	public boolean eatFood(Food food) {
 		boolean ret = food.eat();
 		if(ret) {
 			System.out.println(Thread.currentThread().getName()+" a mangé "+food+" !");
 			foodPos.remove(food);
-			Platform.runLater(
-				() -> {
-					root.getChildren().remove(food.getView());
-				}
-			);
+			food.erase();
 		}
 
 		return ret;
@@ -166,38 +164,11 @@ public class SquareDisplay extends Application {
 	}
 	
 	public void spawnFood(Point2D mousePos) {
-		int foodSize = 40;
-		ImageView foodView = new ImageView(new Image("./food.png", foodSize, 0, true, true));
-		foodView.setX(mousePos.getX() - foodSize / 2);
-		foodView.setY(mousePos.getY() - foodSize / 2);
-		root.getChildren().add(foodView);
-
-		Food food = new Food(mousePos, foodView);
+		Food food = new Food(mousePos, root, me);
+		food.setDrawingPosition(mousePos);
+		food.draw();
 		foodPos.add(food);
 
-		PauseTransition foodTransition = new PauseTransition(Duration.seconds(2));
-		foodTransition.setOnFinished(e -> {
-			if(root.getChildren().contains(foodView)) {
-				root.getChildren().remove(foodView);
-				foodPos.remove(food);
-				
-				ImageView expiredFood = new ImageView(new Image("./expiredFood.png", foodSize, 0, true, true));
-				expiredFood.setX(mousePos.getX() - foodSize / 2);
-				expiredFood.setY(mousePos.getY() - foodSize / 2);
-				root.getChildren().add(expiredFood);
-				
-				FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), expiredFood);
-				expiredFoodTransition.setFromValue(1.0);
-				expiredFoodTransition.setToValue(0.0);
-				expiredFoodTransition.setOnFinished(event -> {
-					root.getChildren().remove(expiredFood);
-				});
-				
-				expiredFoodTransition.play();
-			}
-		});
-		
-		foodTransition.play();
 		synchronized(me) {
 			me.notifyAll();
 		}

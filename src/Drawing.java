@@ -1,3 +1,4 @@
+import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -12,6 +13,7 @@ public abstract class Drawing {
   private Group group;
   private int drawingSize;
   private ImageView view;
+  private Transition transition;
 
   // ===============================================================================================
   // CONSTRUCTOR
@@ -27,6 +29,10 @@ public abstract class Drawing {
   // ===============================================================================================
   // PUBLIC FUNCTIONS
   // ===============================================================================================
+  public ImageView getView() {
+    return view;
+  }
+
   public void setDrawingPosition(Point2D pos) {
     Platform.runLater(
       () -> {
@@ -36,12 +42,29 @@ public abstract class Drawing {
     );
   }
 
+  public void setImage(String imgUrl) {
+    view.setImage(new Image(imgUrl, drawingSize, 0, true, true));
+  }
+
+  public void setTransition(Transition transition) {
+    this.transition = transition;
+  }
+
   public void draw() {
-    group.getChildren().add(view);
+    Platform.runLater(
+      () -> {
+        group.getChildren().add(view);
+        if(transition != null) transition.play();
+      }
+    );
   }
 
   public void erase() {
-    group.getChildren().remove(view);
+    Platform.runLater(
+      () -> {
+        group.getChildren().remove(view);
+      }
+    );
   }
 
 }

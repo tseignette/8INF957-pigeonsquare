@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -53,16 +54,18 @@ public class Pigeon extends Drawing implements Runnable {
   }
   
   private Food getNearest(List<Food> list) {
-	  Food sol = new Food(this.getPos());
-	  double distanceMin = 2000;
-	  for (Food food : list) {
+    Food sol = list.get(0);
+    
+    double distanceMin = 2000;
+    for (Food food : list) {
       Point2D point = food.getPos();
-		  double distance = this.pos.distance(point);
-		  if (distance < distanceMin) {
-			  distanceMin = distance;
-			  sol = food;
-		  }
-	  }
+      double distance = this.pos.distance(point);
+      if (distance < distanceMin) {
+        distanceMin = distance;
+        sol = food;
+      }
+    }
+
 	  return sol;
   }
 
@@ -97,9 +100,12 @@ public class Pigeon extends Drawing implements Runnable {
             }
             else if(square.hasFood()) {
               ArrayList<Food> foodList = square.getFood();
-              Food nearestFood = getNearest(foodList);
-              move(nearestFood.getPos());
-              if(isNear(nearestFood.getPos())) square.eatFood(nearestFood);
+              try {
+                Food nearestFood = getNearest(foodList);
+                move(nearestFood.getPos());
+                if(isNear(nearestFood.getPos())) square.eatFood(nearestFood);
+              }
+              finally { }
             }
 
             Thread.sleep(10);
