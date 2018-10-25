@@ -1,32 +1,30 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.geometry.Point2D;
-import javafx.scene.image.ImageView;
+import javafx.scene.Group;
 
-public class Pigeon implements Runnable {
+public class Pigeon extends Drawing implements Runnable {
 
   // ===============================================================================================
   // ATTRIBUTES
   // ===============================================================================================
-  public final static int IMAGE_SIZE = 60;
   private final static double speed = 1;
 
   private static int pigeonNb = 0;
 
   private Thread thread;
   private Point2D pos;
-  private ImageView view;
   private SquareDisplay square;
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Pigeon(ThreadGroup tg, ImageView pigeonView, SquareDisplay square, Point2D pos) {
+  public Pigeon(ThreadGroup tg, Group group, SquareDisplay square, Point2D pos) {
+    super(group, "./pigeon.png", 60);
+
     this.thread = new Thread(tg, this, "Pigeon "+pigeonNb++);
     this.pos = pos;
-    this.view = pigeonView;
     this.square = square;
     updatePigeon(this.pos);
   }
@@ -47,12 +45,7 @@ public class Pigeon implements Runnable {
     double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_HEIGHT) ? pos.getY() : this.pos.getY();
 
     this.pos = new Point2D(newX, newY);
-    Platform.runLater(
-      () -> {
-        this.view.setX(this.pos.getX() - Pigeon.IMAGE_SIZE / 2);
-        this.view.setY(this.pos.getY() - Pigeon.IMAGE_SIZE / 2);
-      }
-    );
+    setDrawingPosition(pos);
   }
 
   public Point2D getVector(Point2D depart, Point2D arrivee) {

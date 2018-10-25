@@ -124,21 +124,19 @@ public class SquareDisplay extends Application {
 	}
   
 	public void pigeonsBuilder(int pigeonNb) {
-		Image pigeonImage = new Image("./pigeon.png", Pigeon.IMAGE_SIZE, 0, true, true);
 		this.threadGroup = new ThreadGroup("Pigeons");
 		this.pigeons = new ArrayList<Pigeon>();
 		
 		for(int i = 0; i < pigeonNb; i++) {
-			ImageView pigeonView = new ImageView(pigeonImage);
 			Pigeon pigeon = new Pigeon(
 				this.threadGroup,
-				pigeonView,
+				root,
 				this,
 				SquareDisplay.randomPoint2D()
 			);
 
 			this.pigeons.add(pigeon);
-			root.getChildren().add(pigeonView);
+			pigeon.draw();
 		}
 	}
   
