@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -15,12 +14,15 @@ import javafx.stage.Stage;
 public class SquareDisplay extends Application {
 
 	// ===============================================================================================
-	// ATTRIBUTES
+	// CONSTANTS
 	// ===============================================================================================
 	public final static int WINDOWS_WIDTH = 600;
 	public final static int WINDOWS_HEIGHT = 600;
 	private final static Color WINDOW_BACKGROUND_COLOR = Color.BURLYWOOD;
 
+	// ================================================================================================
+	// ATTRIBUTES
+	// ================================================================================================
 	private Group root;
 	private ArrayList<Pigeon> pigeons;
 	private ThreadGroup threadGroup;

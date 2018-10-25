@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
