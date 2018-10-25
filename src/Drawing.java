@@ -33,6 +33,17 @@ public abstract class Drawing {
     return view;
   }
 
+  public Drawing setPosition(Point2D pos) {
+    Platform.runLater(
+      () -> {
+        this.view.setX(pos.getX());
+        this.view.setY(pos.getY());
+      }
+    );
+
+    return this;
+  }
+
   public Drawing setDrawingPosition(Point2D pos) {
     Platform.runLater(
       () -> {

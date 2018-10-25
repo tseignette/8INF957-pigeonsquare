@@ -24,11 +24,11 @@ public class SquareDisplay extends Application {
 	// ATTRIBUTES
 	// ================================================================================================
 	private Group root;
-	private ArrayList<Pigeon> pigeons;
+	private ArrayList<Pigeon> pigeonList = new ArrayList<Pigeon>();
 	private ThreadGroup threadGroup;
 	private boolean hasScary = false;
 	private Point2D scaryPos;
-	private ArrayList<Food> foodList;
+	private ArrayList<Food> foodList = new ArrayList<Food>();
 	private SquareDisplay me = this;
 
 	// ===============================================================================================
@@ -113,19 +113,13 @@ public class SquareDisplay extends Application {
   
 	public void pigeonsBuilder(int pigeonNb) {
 		this.threadGroup = new ThreadGroup("Pigeons");
-		this.pigeons = new ArrayList<Pigeon>();
 		
 		for(int i = 0; i < pigeonNb; i++) {
-			// TODO: enlever le position dans le pigeon
-			Pigeon pigeon = new Pigeon(
-				this.threadGroup,
-				root,
-				this,
-				Utils.randomPoint2D()
-			);
+			Pigeon pigeon = new Pigeon(this.threadGroup, root, this);
+			pigeon.setDrawingPosition(Utils.randomPoint2D())
+			.draw();
 
-			this.pigeons.add(pigeon);
-			pigeon.draw();
+			this.pigeonList.add(pigeon);
 		}
 	}
   
@@ -157,7 +151,7 @@ public class SquareDisplay extends Application {
 	}
 	
 	public void startPigeons() {
-		for(Pigeon pigeon: this.pigeons) {
+		for(Pigeon pigeon: this.pigeonList) {
 			pigeon.getThread().start();
 		}
 	}

@@ -14,19 +14,16 @@ public class Pigeon extends Drawing implements Runnable {
   private static int pigeonNb = 0;
 
   private Thread thread;
-  private Point2D pos;
   private SquareDisplay square;
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Pigeon(ThreadGroup tg, Group group, SquareDisplay square, Point2D pos) {
+  public Pigeon(ThreadGroup tg, Group group, SquareDisplay square) {
     super(group, "./pigeon.png", 60);
 
     this.thread = new Thread(tg, this, "Pigeon "+pigeonNb++);
-    this.pos = pos;
     this.square = square;
-    updatePigeon(this.pos);
   }
 
   // ===============================================================================================
@@ -37,15 +34,14 @@ public class Pigeon extends Drawing implements Runnable {
   }
 
   public Point2D getPos() {
-    return this.pos;
+    return new Point2D(getView().getX(), getView().getY());
   }
 
   public void updatePigeon(Point2D pos) {
-    double newX = (pos.getX() > 0 && pos.getX() < SquareDisplay.WINDOWS_WIDTH) ? pos.getX() : this.pos.getX();
-    double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_HEIGHT) ? pos.getY() : this.pos.getY();
+    double newX = (pos.getX() > 0 && pos.getX() < SquareDisplay.WINDOWS_WIDTH) ? pos.getX() : getPos().getX();
+    double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_HEIGHT) ? pos.getY() : getPos().getY();
 
-    this.pos = new Point2D(newX, newY);
-    setDrawingPosition(pos);
+    setPosition(new Point2D(newX, newY));
   }
 
   public Point2D getVector(Point2D depart, Point2D arrivee) {
@@ -58,7 +54,7 @@ public class Pigeon extends Drawing implements Runnable {
     double distanceMin = 2000;
     for (Food food : list) {
       Point2D point = food.getPos();
-      double distance = this.pos.distance(point);
+      double distance = this.getPos().distance(point);
       if (distance < distanceMin) {
         distanceMin = distance;
         sol = food;
@@ -69,18 +65,18 @@ public class Pigeon extends Drawing implements Runnable {
   }
 
   private boolean isNear(Point2D foodPos) {
-    return(this.pos.distance(foodPos) < 2);
+    return(this.getPos().distance(foodPos) < 2);
   }
 
   public void move(Point2D arrivee) {
-    Point2D vector = getVector(this.pos, arrivee).normalize();
-    Point2D newPos = this.pos.add(vector.multiply(speed));
+    Point2D vector = getVector(this.getPos(), arrivee).normalize();
+    Point2D newPos = this.getPos().add(vector.multiply(speed));
     updatePigeon(newPos);
   }
 
   public void fear(Point2D originFear) {
-	  Point2D vector = getVector(originFear, this.pos).normalize();
-	  Point2D newPos = this.pos.add(vector.multiply(speed));
+	  Point2D vector = getVector(originFear, this.getPos()).normalize();
+	  Point2D newPos = this.getPos().add(vector.multiply(speed));
 	  updatePigeon(newPos);
   }
 
