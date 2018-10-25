@@ -155,40 +155,38 @@ public class SquareDisplay extends Application {
 	}
 	
 	public void spawnFood(Point2D mousePos) {
-		if(hasFood < 3) {
-			hasFood++;
-			foodPos.add(mousePos);
-			int foodSize = 30;
-			ImageView food = new ImageView(new Image("./food.png", foodSize, 0, true, true));
-			food.setX(mousePos.getX() - foodSize / 2);
-			food.setY(mousePos.getY() - foodSize / 2);
-			root.getChildren().add(food);
+		hasFood++;
+		foodPos.add(mousePos);
+		int foodSize = 40;
+		ImageView food = new ImageView(new Image("./food.png", foodSize, 0, true, true));
+		food.setX(mousePos.getX() - foodSize / 2);
+		food.setY(mousePos.getY() - foodSize / 2);
+		root.getChildren().add(food);
 
-			FadeTransition foodTransition = new FadeTransition(Duration.seconds(2), food);
-			foodTransition.setFromValue(1.0);
-			foodTransition.setToValue(0.5);
-			foodTransition.setOnFinished(e -> {
-				root.getChildren().remove(food);
-				foodPos.remove(mousePos);
-				hasFood--;
-				
-				ImageView expiredFood = new ImageView(new Image("./expiredFood.png", foodSize, 0, true, true));
-				expiredFood.setX(mousePos.getX() - foodSize / 2);
-				expiredFood.setY(mousePos.getY() - foodSize / 2);
-				root.getChildren().add(expiredFood);
-				
-				FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), food);
-				expiredFoodTransition.setOnFinished(event -> {
-					root.getChildren().remove(expiredFood);
-				});
-				
-				expiredFoodTransition.play();
+		FadeTransition foodTransition = new FadeTransition(Duration.seconds(2), food);
+		foodTransition.setFromValue(1.0);
+		foodTransition.setToValue(0.5);
+		foodTransition.setOnFinished(e -> {
+			root.getChildren().remove(food);
+			foodPos.remove(mousePos);
+			hasFood--;
+			
+			ImageView expiredFood = new ImageView(new Image("./expiredFood.png", foodSize, 0, true, true));
+			expiredFood.setX(mousePos.getX() - foodSize / 2);
+			expiredFood.setY(mousePos.getY() - foodSize / 2);
+			root.getChildren().add(expiredFood);
+			
+			FadeTransition expiredFoodTransition = new FadeTransition(Duration.seconds(3), food);
+			expiredFoodTransition.setOnFinished(event -> {
+				root.getChildren().remove(expiredFood);
 			});
 			
-			foodTransition.play();
-			synchronized(me) {
-				me.notifyAll();
-			}
+			expiredFoodTransition.play();
+		});
+		
+		foodTransition.play();
+		synchronized(me) {
+			me.notifyAll();
 		}
 	}
 	
