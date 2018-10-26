@@ -57,23 +57,16 @@ public class Pigeon extends Drawing implements Runnable {
     return new Point2D(arrivee.getX() - depart.getX(), arrivee.getY() - depart.getY());
   }
 
-  private void updatePigeon(Point2D pos) {
-    double newX = (pos.getX() > 0 && pos.getX() < SquareDisplay.WINDOWS_WIDTH) ? pos.getX() : getPos().getX();
-    double newY = (pos.getY() > 0 && pos.getY() < SquareDisplay.WINDOWS_HEIGHT) ? pos.getY() : getPos().getY();
-
-    setPosition(new Point2D(newX, newY));
-  }
-
   private void move(Point2D arrivee) {
     Point2D vector = getVector(this.getPos(), arrivee).normalize();
     Point2D newPos = this.getPos().add(vector.multiply(SPEED));
-    updatePigeon(newPos);
+    setPosition(newPos);
   }
 
   private void fear(Point2D originFear) {
 	  Point2D vector = getVector(originFear, this.getPos()).normalize();
 	  Point2D newPos = this.getPos().add(vector.multiply(SPEED));
-	  updatePigeon(newPos);
+	  setPosition(newPos);
   }
 
   // ===============================================================================================

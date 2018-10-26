@@ -36,8 +36,11 @@ public abstract class Drawing {
   public Drawing setPosition(Point2D pos) {
     Platform.runLater(
       () -> {
-        this.view.setX(pos.getX());
-        this.view.setY(pos.getY());
+        double newX = (pos.getX() + drawingSize / 2 > 0 && pos.getX() < SquareDisplay.WINDOWS_WIDTH - drawingSize / 2) ? pos.getX() : view.getX();
+        double newY = (pos.getY() + drawingSize / 2 > 0 && pos.getY() < SquareDisplay.WINDOWS_HEIGHT - drawingSize / 2) ? pos.getY() : view.getY();
+
+        this.view.setX(newX);
+        this.view.setY(newY);
       }
     );
 
