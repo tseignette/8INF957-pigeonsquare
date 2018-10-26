@@ -25,7 +25,7 @@ public class Food extends Drawing {
   public Food(Group group, SquareDisplay square) {
     super(group, "./food.png", Food.IMG_SIZE);
 
-		PauseTransition foodTransition = new PauseTransition(Duration.seconds(2));
+		PauseTransition foodTransition = new PauseTransition(Duration.seconds(3));
 		foodTransition.setOnFinished(e -> {
 			if(!hasBeenEaten) {
         square.removeFood(this);

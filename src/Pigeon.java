@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import javafx.geometry.Point2D;
@@ -9,12 +10,12 @@ public class Pigeon extends Drawing implements Runnable {
   // ===============================================================================================
   // CONSTANTS
   // ===============================================================================================
-  private final static double SPEED = 1; // TODO: vitesse aléatoire
   private final static int IMG_SIZE = 60;
-
+  
   // ===============================================================================================
   // ATTRIBUTES
   // ===============================================================================================
+  private final double speed = 0.4 + Utils.randomDouble(1.2);
   private static int pigeonNb = 0;
 
   private Thread thread;
@@ -53,7 +54,9 @@ public class Pigeon extends Drawing implements Runnable {
 
       return sol;
     }
-    finally { }
+    catch(ConcurrentModificationException e) {
+      return null;
+    }
   }
 
   private Point2D getVector(Point2D depart, Point2D arrivee) {
@@ -62,13 +65,13 @@ public class Pigeon extends Drawing implements Runnable {
 
   private void move(Point2D arrivee) {
     Point2D vector = getVector(this.getPos(), arrivee).normalize();
-    Point2D newPos = this.getPos().add(vector.multiply(SPEED));
+    Point2D newPos = this.getPos().add(vector.multiply(speed));
     setPosition(newPos);
   }
 
   private void fear(Point2D originFear) {
 	  Point2D vector = getVector(originFear, this.getPos()).normalize();
-	  Point2D newPos = this.getPos().add(vector.multiply(SPEED));
+	  Point2D newPos = this.getPos().add(vector.multiply(speed));
 	  setPosition(newPos);
   }
 

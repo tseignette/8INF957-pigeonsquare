@@ -144,7 +144,7 @@ public class SquareDisplay extends Application {
 		pigeonsBuilder(10);
 
 		// On crée un thread responsable de l'apparition du bad guy
-		final double limit = Utils.randomDouble(80);
+		final double limit = Utils.randomDouble(60);
 		System.out.println("Chances d'apparition de la méchante personne : "+(int)(100 - limit)+"%");
 		ScheduledExecutorService scaryScheduler = Executors.newScheduledThreadPool(1);
     Runnable toRun = new Runnable() {
