@@ -1,4 +1,8 @@
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -134,14 +138,20 @@ public class SquareDisplay extends Application {
 	}
 
 	public void start(Stage primaryStage) {
+		// On crée la scène et les pigeons
 		this.root = new Group();
-		this.foodList = new ArrayList<Food>();
-		
 		sceneBuilder(primaryStage);
 		pigeonsBuilder(10);
-		
-		// On arrête les threads à la fermeture de la fenêtre
-		primaryStage.setOnCloseRequest(event -> stopPigeons());
+
+		// On crée un thread responsable de l'apparition du bad guy
+		final double limit = Utils.randomDouble(80);
+		System.out.println("Chances d'apparition de la méchante personne : "+(int)(100 - limit)+"%");
+		ScheduledExecutorService scaryScheduler = Executors.newScheduledThreadPool(1);
+    Runnable toRun = new Runnable() {
+			public void run() {
+				if(Utils.randomDouble(100) > limit) spawnScary(Utils.randomPoint2D());
+			}
+    };
 		
 		// On gère le clic gauche et droit
 		primaryStage.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
@@ -160,8 +170,17 @@ public class SquareDisplay extends Application {
 			}
 		});
 
+		// On lance tout
 		primaryStage.show();
 		startPigeons();
+		ScheduledFuture<?> scaryHandle = scaryScheduler.scheduleAtFixedRate(toRun, 5, 5, TimeUnit.SECONDS);
+
+		// On arrête les threads à la fermeture de la fenêtre
+		primaryStage.setOnCloseRequest(event -> {
+			stopPigeons();
+			scaryHandle.cancel(true);
+			scaryScheduler.shutdown();
+		});
 	}
   
 }

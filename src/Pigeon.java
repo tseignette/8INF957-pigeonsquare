@@ -9,7 +9,7 @@ public class Pigeon extends Drawing implements Runnable {
   // ===============================================================================================
   // CONSTANTS
   // ===============================================================================================
-  private final static double SPEED = 1;
+  private final static double SPEED = 1; // TODO: vitesse aléatoire
   private final static int IMG_SIZE = 60;
 
   // ===============================================================================================
@@ -38,19 +38,22 @@ public class Pigeon extends Drawing implements Runnable {
   }
 
   private Food getNearest(List<Food> list) {
-    Food sol = list.get(0);
-    
-    double distanceMin = 2000;
-    for (Food food : list) {
-      Point2D point = food.getPos();
-      double distance = this.getPos().distance(point);
-      if (distance < distanceMin) {
-        distanceMin = distance;
-        sol = food;
+    try {
+      Food sol = list.get(0);
+      
+      double distanceMin = 2000;
+      for (Food food : list) {
+        Point2D point = food.getPos();
+        double distance = this.getPos().distance(point);
+        if (distance < distanceMin) {
+          distanceMin = distance;
+          sol = food;
+        }
       }
-    }
 
-	  return sol;
+      return sol;
+    }
+    finally { }
   }
 
   private Point2D getVector(Point2D depart, Point2D arrivee) {
