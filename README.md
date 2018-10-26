@@ -9,6 +9,6 @@ Equipe : GALA Laureen, SALADIN Baptiste, SEIGNETTE Thomas
 ``make`` pour compiler et lancer
 
 ## Fonctionnement
-10 pigeons sont présents le parc. Chaque pigeon a une vitesse de déplacement différente.
+10 pigeons sont présents dans le parc. Chaque pigeon a une vitesse de déplacement différente. Cela peut impliquer que certains pigeons mangent bien moins souvent que d'autres.
 On peut soit placer de la nourriture avec le clic gauche (autant que l'on veut) ou faire apparaître une méchante personne qui fait fuir les pigeons avec le clic droit (une seule personne à la fois).
 Toutes les 5 secondes, il y a une certaine chance pour que la méchante personne apparaisse aléatoirement dans le parc.
